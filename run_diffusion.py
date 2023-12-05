@@ -21,7 +21,7 @@ import json
 
 # from models import DiT_models
 from diffusers.models import AutoencoderKL
-from runners.diffusion import create_diffusion
+from diffusion import create_diffusion
 from models.xswin_diffusion import XNetSwinTransformerDiffusion
 
 # Profiling
