@@ -126,9 +126,9 @@ class PoseNet(nn.Module):
 
         print(rx.shape, tx.shape, cx.shape)
 
-        rx = self.conv4_r(rx).view(bs, self.num_obj, 4, self.num_points)
-        tx = self.conv4_t(tx).view(bs, self.num_obj, 3, self.num_points)
-        cx = torch.sigmoid(self.conv4_c(cx)).view(bs, self.num_obj, 1, self.num_points)
+        rx = self.conv4_r(rx)
+        tx = self.conv4_t(tx)
+        cx = torch.sigmoid(self.conv4_c(cx))
 
         print(rx.shape, tx.shape, cx.shape)
         
