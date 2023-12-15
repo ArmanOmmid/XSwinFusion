@@ -43,8 +43,8 @@ class SpecialEuclideanGeodesicLoss(_Loss):
             rotation_loss = torch.mean(theta) # Over Batch
         else:
             # symmetries # B N 3 3
-            p_R_sym = p_R.unsqueeze(1) # B 1 3 3 
-            t_R_sym = t_R.unsqueeze(1) # B 1 3 3
+            p_R_sym = p_R.unsqueeze(1) # B 1 3 3 #predicted
+            t_R_sym = t_R.unsqueeze(1) # B 1 3 3 #truth
             
             # Avoid gradient computations by applying to ground truth
             # Compose Transforms (No transpose). Optionally, do tranpose now and avoid it later
@@ -54,8 +54,7 @@ class SpecialEuclideanGeodesicLoss(_Loss):
             cosine_term = torch.clamp(cosine_term, -0.9999, 0.9999)  # Numerical stability
             symmetry_losses = torch.acos(cosine_term)  # Shape: (B, N)
             # Get minimum loss and compute mean
-            min_symmetry = torch.argmin(symmetry_losses, dim=-1)
-            print(min_symmetry.shape)
+            argmin_symmetry = torch.argmin(symmetry_losses, dim=-1)
             rotation_loss = torch.min(symmetry_losses, dim=-1).values.mean()
 
         losses.append(rotation_loss)
@@ -63,6 +62,12 @@ class SpecialEuclideanGeodesicLoss(_Loss):
 
         if self.PCD_Loss and source_pcd is not None:
             # source_pcd, predicted_pose, 
+
+            if symmetries is not None:
+                predicted_transform = t_R_sym[torch.arange(symmetries.size(0)), argmin_symmetry]
+
+                print(predicted_transform)
+
             pcd_loss = self.PCD_criterion(source_pcd, predicted_transform, target_transform)
             losses.append(pcd_loss)
 
