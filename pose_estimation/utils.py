@@ -66,7 +66,7 @@ def sample_indices(v, u, max_samples):
 
     return sample_indices.T
 
-def enumerate_symmetries(sym_info, inf=24):
+def enumerate_symmetries(sym_info, inf=90):
     basis = {"x" : torch.tensor([[1, 0, 0]]), "y" : torch.tensor([[0, 1, 0]]), "z" : torch.tensor([[0, 0, 1]])}
     all_symmetries = []
     matrices = {
