@@ -66,7 +66,8 @@ class SpecialEuclideanGeodesicLoss(_Loss):
             if symmetries is not None:
                 target_transform = t_R_sym[torch.arange(symmetries.size(0)), argmin_symmetry] # minimal error target transform
 
-                print(target_transform)
+                print(target_transform.shape)
+                print(t_T.shape)
 
             pcd_loss = self.PCD_criterion(source_pcd, predicted_transform, target_transform)
             losses.append(pcd_loss)
