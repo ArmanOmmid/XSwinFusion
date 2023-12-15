@@ -15,6 +15,7 @@ import numpy as np
 import pdb
 import torch.nn.functional as F
 
+import kornia.geometry.conversions as conversions
 from .pspnet import PSPNet
 
 psp_models = {
@@ -126,9 +127,9 @@ class PoseNet(nn.Module):
 
         print(rx.shape, tx.shape, cx.shape)
 
-        rx = self.conv4_r(rx)
-        tx = self.conv4_t(tx)
-        cx = torch.sigmoid(self.conv4_c(cx))
+        rx = self.conv4_r(rx).contiguous().transpose(2, 1)
+        tx = self.conv4_t(tx).contiguous().transpose(2, 1)
+        cx = torch.sigmoid(self.conv4_c(cx)).contiguous().transpose(2, 1).squeeze(-1).argmax(dim=-1)
 
         print(rx.shape, tx.shape, cx.shape)
         
