@@ -125,24 +125,28 @@ class PoseNet(nn.Module):
         tx = F.relu(self.conv3_t(tx))
         cx = F.relu(self.conv3_c(cx))
 
-        print(rx.shape, tx.shape, cx.shape)
+        R = self.conv4_r(rx).contiguous().transpose(2, 1)
+        T = self.conv4_t(tx).contiguous().transpose(2, 1)
+        C = torch.sigmoid(self.conv4_c(cx)).contiguous().transpose(2, 1).squeeze(-1).argmax(dim=-1)
 
-        rx = self.conv4_r(rx).contiguous().transpose(2, 1)
-        tx = self.conv4_t(tx).contiguous().transpose(2, 1)
-        cx = torch.sigmoid(self.conv4_c(cx)).contiguous().transpose(2, 1).squeeze(-1).argmax(dim=-1)
+        B = np.arange(pcd.size(0))
+        T = T[B, C, :].unsqueeze(-1)
+        R = R[B, C, :]
+        R = conversions.quaternion_to_rotation_matrix(R) # It's automatically normalized
 
-        print(rx.shape, tx.shape, cx.shape)
+
+        x = torch.cat((R, T), dim=-1)
         
-        b = 0
-        out_rx = torch.index_select(rx[b], 0, obj[b])
-        out_tx = torch.index_select(tx[b], 0, obj[b])
-        out_cx = torch.index_select(cx[b], 0, obj[b])
+        # b = 0
+        # out_rx = torch.index_select(rx[b], 0, obj[b])
+        # out_tx = torch.index_select(tx[b], 0, obj[b])
+        # out_cx = torch.index_select(cx[b], 0, obj[b])
         
-        out_rx = out_rx.contiguous().transpose(2, 1).contiguous()
-        out_cx = out_cx.contiguous().transpose(2, 1).contiguous()
-        out_tx = out_tx.contiguous().transpose(2, 1).contiguous()
+        # out_rx = out_rx.contiguous().transpose(2, 1).contiguous()
+        # out_cx = out_cx.contiguous().transpose(2, 1).contiguous()
+        # out_tx = out_tx.contiguous().transpose(2, 1).contiguous()
 
-        return 
+        return x, None
         
         # return out_rx, out_tx, out_cx, emb.detach()
 

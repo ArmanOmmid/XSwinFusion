@@ -165,13 +165,12 @@ class XSwinFusion(_Network):
         C = self.confidence(x)
         C = C.squeeze(-1).argmax(dim=-1)
 
+        T = T[B, C, :].unsqueeze(-1)
         R = R[B, C, :]
         if self.quaternion:
             R = conversions.quaternion_to_rotation_matrix(R) # It's automatically normalized
         else:
             R = R.view(-1, 3, 3)
-
-        T = T[B, C, :].unsqueeze(-1)
 
         x = torch.cat((R, T), dim=-1)
 
