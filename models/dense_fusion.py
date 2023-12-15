@@ -146,6 +146,8 @@ class PoseNet(nn.Module):
         # out_cx = out_cx.contiguous().transpose(2, 1).contiguous()
         # out_tx = out_tx.contiguous().transpose(2, 1).contiguous()
 
+        print(x.shape)
+
         return x, None
         
         # return out_rx, out_tx, out_cx, emb.detach()
