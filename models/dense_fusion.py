@@ -108,12 +108,8 @@ class PoseNet(nn.Module):
 
         rgb = rgb[batch_indices, row_indices, col_indices] # RGB POINT CLOUD
         rgb = torch.permute(rgb, (0, 2, 1)) # B, L, C -> B, C, L
-
-        print(pcd.shape)
-        
         pcd = pcd.transpose(2, 1).contiguous()
 
-        print(pcd.shape, rgb.shape)
         ap_x = self.feat(pcd, rgb)
 
         rx = F.relu(self.conv1_r(ap_x))
@@ -127,6 +123,8 @@ class PoseNet(nn.Module):
         rx = F.relu(self.conv3_r(rx))
         tx = F.relu(self.conv3_t(tx))
         cx = F.relu(self.conv3_c(cx))
+
+        print(rx.shape, tx.shape, cx.shape)
 
         rx = self.conv4_r(rx).view(bs, self.num_obj, 4, self.num_points)
         tx = self.conv4_t(tx).view(bs, self.num_obj, 3, self.num_points)
