@@ -61,7 +61,7 @@ class PoseDataNPZ():
                 self._npz_handlers_cache[scene_path] = np.load(scene_path, allow_pickle=True, mmap_mode="r") # NPZ Generator object 
             self.data[key] = self._npz_handlers_cache[scene_path]
 
-            # color, depth, label, meta
+            # color, depth, label, meta # 1492
 
         self.keylist = list(self.data.keys())
 
